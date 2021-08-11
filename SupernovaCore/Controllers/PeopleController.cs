@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SupernovaCore.Models;
+using SupernovaCore.Services;
 using SupernovaCore.ViewModel;
 
 namespace SupernovaCore.Controllers
@@ -13,10 +14,12 @@ namespace SupernovaCore.Controllers
     public class PeopleController : Controller
     {
         private readonly Supernova_teamContext _context;
+        private readonly IEmployeesService employeesService;
 
-        public PeopleController(Supernova_teamContext context)
+        public PeopleController(Supernova_teamContext context, IEmployeesService employeesService)
         {
             _context = context;
+            this.employeesService = employeesService;
         }
 
         // GET: People
@@ -24,14 +27,17 @@ namespace SupernovaCore.Controllers
         {
             try
             {
-                var supernova_teamContext = _context.EmployeesInformations.Include(e => e.CompanyResources);
-                return View(await supernova_teamContext.ToListAsync());
+                var employeesWithResources = await this.employeesService.GetEmployeesWithResources();
+                return View(employeesWithResources);
+
+                //var supernova_teamContext = _context.EmployeesInformations.Include(e => e.CompanyResources);
+                //return View(await supernova_teamContext.ToListAsync());
 
                // return View();
             }
             catch (Exception ex)
             {
-
+                // Log error/ex
                 throw;
             }
         }
@@ -44,37 +50,40 @@ namespace SupernovaCore.Controllers
                 return NotFound();
             }
 
-            var employeesInformation = await _context.EmployeesInformations
-                .Include(e => e.CompanyResources)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employeesInformation == null)
+            //var employeesInformation = await _context.EmployeesInformations
+            //    .Include(e => e.CompanyResources)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+
+            var employeeInformation = await this.employeesService.EmployeeDetails(id);
+
+            if (employeeInformation == null)
             {
                 return NotFound();
             }
 
-            SupernovaModel supernovaModel = new SupernovaModel()
-            {
-                Id = (int)id,
-                FirstName = employeesInformation.FirstName,
-                SecondName = employeesInformation.SecondName,
-                LastName = employeesInformation.LastName,
-                Address = employeesInformation.Address,
-                MobileNumber = employeesInformation.MobileNumber,
-                Email = employeesInformation.Email,
-                Position = employeesInformation.Position,
-                Birthday = employeesInformation.Birthday,
-                CompanyResourcesId = (int)employeesInformation.CompanyResourcesId,
-                LaptopModel = employeesInformation.CompanyResources.LaptopModel,
-                MonitorModel = employeesInformation.CompanyResources.MonitorModel,
-                LaptopSN = employeesInformation.CompanyResources.LaptopSN,
-                MonitorSN = employeesInformation.CompanyResources.MonitorSN,
-                MobilePhone = employeesInformation.CompanyResources.MobilePhone,
-                CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
-                Headphones = employeesInformation.CompanyResources.Headphones,
-                OtherInfo = employeesInformation.CompanyResources.OtherInfo
-            };
+            //SupernovaModel supernovaModel = new SupernovaModel()
+            //{
+            //    Id = (int)id,
+            //    FirstName = employeesInformation.FirstName,
+            //    SecondName = employeesInformation.SecondName,
+            //    LastName = employeesInformation.LastName,
+            //    Address = employeesInformation.Address,
+            //    MobileNumber = employeesInformation.MobileNumber,
+            //    Email = employeesInformation.Email,
+            //    Position = employeesInformation.Position,
+            //    Birthday = employeesInformation.Birthday,
+            //    CompanyResourcesId = (int)employeesInformation.CompanyResourcesId,
+            //    LaptopModel = employeesInformation.CompanyResources.LaptopModel,
+            //    MonitorModel = employeesInformation.CompanyResources.MonitorModel,
+            //    LaptopSN = employeesInformation.CompanyResources.LaptopSN,
+            //    MonitorSN = employeesInformation.CompanyResources.MonitorSN,
+            //    MobilePhone = employeesInformation.CompanyResources.MobilePhone,
+            //    CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
+            //    Headphones = employeesInformation.CompanyResources.Headphones,
+            //    OtherInfo = employeesInformation.CompanyResources.OtherInfo
+            //};
 
-            return View(supernovaModel);
+            return View(employeeInformation);
         }
 
         // GET: People/Create

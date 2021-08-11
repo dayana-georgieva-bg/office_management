@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SupernovaCore.Models;
+using SupernovaCore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +31,14 @@ namespace SupernovaCore
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<Supernova_teamContext>();
             services.AddMvc();
+
+            services.AddTransient<IEmployeesService, EmployeesService>();
             //services.AddSingleton(provider => new MapperConfiguration(cfg =>
             //{
             //    cfg.AddProfile(new UserProfile(provider.GetService<Supernova_teamContext>()));
             //}));
-            
-           
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
