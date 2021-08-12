@@ -28,12 +28,11 @@ namespace SupernovaCore.ViewModel
         public Nullable<int> CompanyMobileNumber { get; set; }
         public string Headphones { get; set; }
         public string OtherInfo { get; set; }
-        [ForeignKey("CompanyResourcesId")]
-        public int CompanyResourcesId { get; set; }
+        public int ResourceId { get; set; }
 
         public virtual EmployeesInformation Employees_information { get; set; }
 
-        public virtual CompanyResource CompanyResource { get; set; }
+        public virtual CompanyResource Company_Resource { get; set; }
         public virtual DbSet<EmployeesInformation> Employees_InformationDB { get; set; }
         public virtual DbSet<CompanyResource> CompanyResourcesDB { get; set; }
     }

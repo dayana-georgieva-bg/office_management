@@ -11,5 +11,8 @@ namespace SupernovaCore.Services
         Task<List<EmployeesInformation>> GetEmployeesWithResources();
 
         Task<SupernovaModel> EmployeeDetails(int? id);
+        Task<SupernovaModel> EmployeeEditGet(int? id);
+        Task<SupernovaModel> EmployeeEditPost(SupernovaModel supernovaModel, int? id);
+        Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel);
     }
 }

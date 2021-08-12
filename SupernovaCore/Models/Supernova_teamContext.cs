@@ -24,7 +24,8 @@ namespace SupernovaCore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.\\;Database=Supernova_team;Trusted_Connection=True;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=localhost;Database=Supernova_team;Trusted_Connection=True;");
             }
         }
 
@@ -40,7 +41,7 @@ namespace SupernovaCore.Models
 
                 entity.Property(e => e.LaptopModel).HasMaxLength(50);
 
-                entity.Property(e => e.LaptopSN)
+                entity.Property(e => e.LaptopSn)
                     .HasMaxLength(50)
                     .HasColumnName("LaptopSN");
 
@@ -48,7 +49,7 @@ namespace SupernovaCore.Models
 
                 entity.Property(e => e.MonitorModel).HasMaxLength(50);
 
-                entity.Property(e => e.MonitorSN)
+                entity.Property(e => e.MonitorSn)
                     .HasMaxLength(50)
                     .HasColumnName("MonitorSN");
 
@@ -75,7 +76,8 @@ namespace SupernovaCore.Models
 
                 entity.HasOne(d => d.CompanyResources)
                     .WithMany(p => p.EmployeesInformations)
-                    .HasForeignKey(d => d.CompanyResourcesId)
+                    .HasForeignKey(d => d.ResourceId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Employees_information_CompanyResources");
             });
 

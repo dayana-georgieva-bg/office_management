@@ -29,16 +29,11 @@ namespace SupernovaCore.Controllers
             {
                 var employeesWithResources = await this.employeesService.GetEmployeesWithResources();
                 return View(employeesWithResources);
-
-                //var supernova_teamContext = _context.EmployeesInformations.Include(e => e.CompanyResources);
-                //return View(await supernova_teamContext.ToListAsync());
-
-               // return View();
             }
             catch (Exception ex)
             {
                 // Log error/ex
-                throw;
+                throw ;
             }
         }
 
@@ -50,13 +45,55 @@ namespace SupernovaCore.Controllers
                 return NotFound();
             }
 
-            //var employeesInformation = await _context.EmployeesInformations
-            //    .Include(e => e.CompanyResources)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-
             var employeeInformation = await this.employeesService.EmployeeDetails(id);
 
             if (employeeInformation == null)
+            {
+                return NotFound();
+            }
+
+            return View(employeeInformation);
+        }
+
+        // GET: People/Create
+        public IActionResult Create()
+        {
+            ViewData["CompanyResourcesId"] = new SelectList(_context.CompanyResources, "Id", "Id");
+            return View();
+        }
+
+        // POST: People/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SupernovaModel supernovaCreate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var create = await this.employeesService.EmployeeCreate(supernovaCreate);
+           
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: People/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            //var employeesInformation = await _context.EmployeesInformations
+            //    .Include(e => e.CompanyResources)
+            //    .Where(r => r.Id == id && r.CompanyResourcesId == r.CompanyResources.Id)
+            //    .FirstOrDefaultAsync();
+            var employeesInformation = await this.employeesService.EmployeeEditGet(id);
+
+            if (employeesInformation == null)
             {
                 return NotFound();
             }
@@ -83,117 +120,7 @@ namespace SupernovaCore.Controllers
             //    OtherInfo = employeesInformation.CompanyResources.OtherInfo
             //};
 
-            return View(employeeInformation);
-        }
-
-        // GET: People/Create
-        public IActionResult Create()
-        {
-            ViewData["CompanyResourcesId"] = new SelectList(_context.CompanyResources, "Id", "Id");
-            return View();
-        }
-
-        // POST: People/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SupernovaModel supernovaCreate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            CompanyResource companyResource = new CompanyResource()
-            {
-                Id = 0,
-                LaptopModel = supernovaCreate.LaptopModel,
-                MonitorModel = supernovaCreate.MonitorModel,
-                LaptopSN = supernovaCreate.LaptopSN,
-                MonitorSN = supernovaCreate.MonitorSN,
-                MobilePhone = supernovaCreate.MobilePhone,
-                CompanyMobileNumber = supernovaCreate.CompanyMobileNumber,
-                Headphones = supernovaCreate.Headphones,
-                OtherInfo = supernovaCreate.OtherInfo
-            };
-            try
-            {
-                _context.Add(companyResource);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return View(supernovaCreate);
-            }
-
-            EmployeesInformation employeesInformation = new EmployeesInformation()
-            {
-                Id = 0,
-                FirstName = supernovaCreate.FirstName,
-                SecondName = supernovaCreate.SecondName,
-                LastName = supernovaCreate.LastName,
-                Address = supernovaCreate.Address,
-                MobileNumber = supernovaCreate.MobileNumber,
-                Email = supernovaCreate.Email,
-                Position = supernovaCreate.Position,
-                Birthday = supernovaCreate.Birthday,
-                CompanyResourcesId = companyResource.Id
-            };
-            try
-            {
-                _context.Add(employeesInformation);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-
-                return View(supernovaCreate);
-            }
-            //ViewData["CompanyResourcesId"] = new SelectList(_context.CompanyResources, "Id", "Id", employeesInformation.CompanyResourcesId);
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: People/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var employeesInformation = await _context.EmployeesInformations
-                .Include(e => e.CompanyResources)
-                .Where(r => r.Id == id && r.CompanyResourcesId == r.CompanyResources.Id)
-                .FirstOrDefaultAsync();
-            if (employeesInformation == null)
-            {
-                return NotFound();
-            }
-
-            SupernovaModel supernovaModel = new SupernovaModel()
-            {
-                Id = (int)id,
-                FirstName = employeesInformation.FirstName,
-                SecondName = employeesInformation.SecondName,
-                LastName = employeesInformation.LastName,
-                Address = employeesInformation.Address,
-                MobileNumber = employeesInformation.MobileNumber,
-                Email = employeesInformation.Email,
-                Position = employeesInformation.Position,
-                Birthday = employeesInformation.Birthday,
-                CompanyResourcesId = (int)employeesInformation.CompanyResourcesId,
-                LaptopModel = employeesInformation.CompanyResources.LaptopModel,
-                MonitorModel = employeesInformation.CompanyResources.MonitorModel,
-                LaptopSN = employeesInformation.CompanyResources.LaptopSN,
-                MonitorSN = employeesInformation.CompanyResources.MonitorSN,
-                MobilePhone = employeesInformation.CompanyResources.MobilePhone,
-                CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
-                Headphones = employeesInformation.CompanyResources.Headphones,
-                OtherInfo = employeesInformation.CompanyResources.OtherInfo
-            };
-            //ViewData["CompanyResourcesId"] = new SelectList(_context.CompanyResources, "Id", "Id", employeesInformation.CompanyResourcesId);
-            return View(supernovaModel);
+            return View(employeesInformation);
         }
 
         // POST: People/Edit/5
@@ -203,40 +130,19 @@ namespace SupernovaCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SupernovaModel employeesInformation, int id)
         {
-            //var teamContext = await _context.EmployeesInformations.FindAsync(employeesInformation.Id);
-            var teamContext = await _context.EmployeesInformations
-                .Include(e => e.CompanyResources)
-                .Where(r => r.Id == id && r.CompanyResourcesId == r.CompanyResources.Id)
-                .FirstOrDefaultAsync();
+
+            var edit = await this.employeesService.EmployeeEditPost(employeesInformation, id);
 
             if (id != employeesInformation.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                teamContext.FirstName = employeesInformation.FirstName;
-                teamContext.SecondName = employeesInformation.SecondName;
-                teamContext.LastName = employeesInformation.LastName;
-                teamContext.Position = employeesInformation.Position;
-                teamContext.Email = employeesInformation.Email;
-                teamContext.Birthday = employeesInformation.Birthday;
-                teamContext.Address = employeesInformation.Address;
-                teamContext.MobileNumber = employeesInformation.MobileNumber;
-
-                teamContext.CompanyResources.CompanyMobileNumber = employeesInformation.CompanyMobileNumber;
-                teamContext.CompanyResources.Headphones = employeesInformation.Headphones;
-                teamContext.CompanyResources.LaptopModel = employeesInformation.LaptopModel;
-                teamContext.CompanyResources.LaptopSN = employeesInformation.LaptopSN;
-                teamContext.CompanyResources.MobilePhone = employeesInformation.MobilePhone;
-                teamContext.CompanyResources.MonitorModel = employeesInformation.MonitorModel;
-                teamContext.CompanyResources.MonitorSN = employeesInformation.MonitorSN;
-                teamContext.CompanyResources.OtherInfo = employeesInformation.OtherInfo;
                 try
                 {
-                    _context.Update(teamContext);
-                    await _context.SaveChangesAsync();
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -249,11 +155,11 @@ namespace SupernovaCore.Controllers
                         throw;
                     }
                 }
+                return View(employeesInformation);
 
-                return RedirectToAction(nameof(Index));
             }
-            //ViewData["CompanyResourcesId"] = new SelectList(_context.CompanyResources, "Id", "Id", employeesInformation.CompanyResourcesId);
-            return View(employeesInformation);
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: People/Delete/5
@@ -280,9 +186,17 @@ namespace SupernovaCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employeesInformation = await _context.EmployeesInformations.FindAsync(id);
+
+            var employeesInformation = await _context.EmployeesInformations
+                .Include(r => r.CompanyResources)
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync();
+
+
+
             _context.EmployeesInformations.Remove(employeesInformation);
-            await _context.SaveChangesAsync();
+             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
