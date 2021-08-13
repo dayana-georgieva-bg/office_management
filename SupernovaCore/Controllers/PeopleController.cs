@@ -98,28 +98,6 @@ namespace SupernovaCore.Controllers
                 return NotFound();
             }
 
-            //SupernovaModel supernovaModel = new SupernovaModel()
-            //{
-            //    Id = (int)id,
-            //    FirstName = employeesInformation.FirstName,
-            //    SecondName = employeesInformation.SecondName,
-            //    LastName = employeesInformation.LastName,
-            //    Address = employeesInformation.Address,
-            //    MobileNumber = employeesInformation.MobileNumber,
-            //    Email = employeesInformation.Email,
-            //    Position = employeesInformation.Position,
-            //    Birthday = employeesInformation.Birthday,
-            //    CompanyResourcesId = (int)employeesInformation.CompanyResourcesId,
-            //    LaptopModel = employeesInformation.CompanyResources.LaptopModel,
-            //    MonitorModel = employeesInformation.CompanyResources.MonitorModel,
-            //    LaptopSN = employeesInformation.CompanyResources.LaptopSN,
-            //    MonitorSN = employeesInformation.CompanyResources.MonitorSN,
-            //    MobilePhone = employeesInformation.CompanyResources.MobilePhone,
-            //    CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
-            //    Headphones = employeesInformation.CompanyResources.Headphones,
-            //    OtherInfo = employeesInformation.CompanyResources.OtherInfo
-            //};
-
             return View(employeesInformation);
         }
 
@@ -191,8 +169,6 @@ namespace SupernovaCore.Controllers
                 .Include(r => r.CompanyResources)
                 .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
-
-
 
             _context.EmployeesInformations.Remove(employeesInformation);
              await _context.SaveChangesAsync();

@@ -28,7 +28,7 @@ namespace SupernovaCore.ViewModel
         public Nullable<int> CompanyMobileNumber { get; set; }
         public string Headphones { get; set; }
         public string OtherInfo { get; set; }
-        public int ResourceId { get; set; }
+        public int EmployeeId { get; set; }
 
         public virtual EmployeesInformation Employees_information { get; set; }
 

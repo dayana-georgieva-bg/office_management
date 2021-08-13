@@ -13,22 +13,6 @@ namespace SupernovaCore.Services
         public async Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel)
         {
             var context = new Supernova_teamContext();
-
-            CompanyResource companyResource = new CompanyResource()
-            {
-                Id = 0,
-                LaptopModel = supernovaModel.LaptopModel,
-                MonitorModel = supernovaModel.MonitorModel,
-                LaptopSn = supernovaModel.LaptopSN,
-                MonitorSn = supernovaModel.MonitorSN,
-                MobilePhone = supernovaModel.MobilePhone,
-                CompanyMobileNumber = supernovaModel.CompanyMobileNumber,
-                Headphones = supernovaModel.Headphones,
-                OtherInfo = supernovaModel.OtherInfo
-            };
-            
-                 context.Add(companyResource);
-                 await context.SaveChangesAsync();
             
 
             EmployeesInformation employeesInformation = new EmployeesInformation()
@@ -41,12 +25,30 @@ namespace SupernovaCore.Services
                 MobileNumber = supernovaModel.MobileNumber,
                 Email = supernovaModel.Email,
                 Position = supernovaModel.Position,
-                Birthday = supernovaModel.Birthday,
-                ResourceId = companyResource.Id
+                Birthday = supernovaModel.Birthday
+                
             };
             
                 context.Add(employeesInformation);
                 await context.SaveChangesAsync();
+
+            CompanyResource companyResource = new CompanyResource()
+            {
+                Id = 0,
+                LaptopModel = supernovaModel.LaptopModel,
+                MonitorModel = supernovaModel.MonitorModel,
+                LaptopSn = supernovaModel.LaptopSN,
+                MonitorSn = supernovaModel.MonitorSN,
+                MobilePhone = supernovaModel.MobilePhone,
+                CompanyMobileNumber = supernovaModel.CompanyMobileNumber,
+                Headphones = supernovaModel.Headphones,
+                OtherInfo = supernovaModel.OtherInfo,
+                EmployeeId = employeesInformation.Id
+
+            };
+
+            context.Add(companyResource);
+            await context.SaveChangesAsync();
 
             return supernovaModel;
         }
@@ -75,15 +77,15 @@ namespace SupernovaCore.Services
                 Email = employeesInformation.Email,
                 Position = employeesInformation.Position,
                 Birthday = employeesInformation.Birthday,
-                ResourceId = (int)employeesInformation.ResourceId,
-                LaptopModel = employeesInformation.CompanyResources.LaptopModel,
-                MonitorModel = employeesInformation.CompanyResources.MonitorModel,
-                LaptopSN = employeesInformation.CompanyResources.LaptopSn,
-                MonitorSN = employeesInformation.CompanyResources.MonitorSn,
-                MobilePhone = employeesInformation.CompanyResources.MobilePhone,
-                CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
-                Headphones = employeesInformation.CompanyResources.Headphones,
-                OtherInfo = employeesInformation.CompanyResources.OtherInfo
+                EmployeeId = (int)employeesInformation.CompanyResources.FirstOrDefault().EmployeeId,
+                LaptopModel = employeesInformation.CompanyResources.FirstOrDefault().LaptopModel,
+                MonitorModel = employeesInformation.CompanyResources.FirstOrDefault().MonitorModel,
+                LaptopSN = employeesInformation.CompanyResources.FirstOrDefault().LaptopSn,
+                MonitorSN = employeesInformation.CompanyResources.FirstOrDefault().MonitorSn,
+                MobilePhone = employeesInformation.CompanyResources.FirstOrDefault().MobilePhone,
+                CompanyMobileNumber = employeesInformation.CompanyResources.FirstOrDefault().CompanyMobileNumber,
+                Headphones = employeesInformation.CompanyResources.FirstOrDefault().Headphones,
+                OtherInfo = employeesInformation.CompanyResources.FirstOrDefault().OtherInfo
             };
 
             return supernovaModel;
@@ -108,15 +110,15 @@ namespace SupernovaCore.Services
                 Email = employeesInformation.Email,
                 Position = employeesInformation.Position,
                 Birthday = employeesInformation.Birthday,
-                ResourceId = (int)employeesInformation.ResourceId,
-                LaptopModel = employeesInformation.CompanyResources.LaptopModel,
-                MonitorModel = employeesInformation.CompanyResources.MonitorModel,
-                LaptopSN = employeesInformation.CompanyResources.LaptopSn,
-                MonitorSN = employeesInformation.CompanyResources.MonitorSn,
-                MobilePhone = employeesInformation.CompanyResources.MobilePhone,
-                CompanyMobileNumber = employeesInformation.CompanyResources.CompanyMobileNumber,
-                Headphones = employeesInformation.CompanyResources.Headphones,
-                OtherInfo = employeesInformation.CompanyResources.OtherInfo
+                EmployeeId = (int)employeesInformation.CompanyResources.FirstOrDefault().EmployeeId,
+                LaptopModel = employeesInformation.CompanyResources.FirstOrDefault().LaptopModel,
+                MonitorModel = employeesInformation.CompanyResources.FirstOrDefault().MonitorModel,
+                LaptopSN = employeesInformation.CompanyResources.FirstOrDefault().LaptopSn,
+                MonitorSN = employeesInformation.CompanyResources.FirstOrDefault().MonitorSn,
+                MobilePhone = employeesInformation.CompanyResources.FirstOrDefault().MobilePhone,
+                CompanyMobileNumber = employeesInformation.CompanyResources.FirstOrDefault().CompanyMobileNumber,
+                Headphones = employeesInformation.CompanyResources.FirstOrDefault().Headphones,
+                OtherInfo = employeesInformation.CompanyResources.FirstOrDefault().OtherInfo
             };
 
             return supernovaModel;
@@ -127,30 +129,30 @@ namespace SupernovaCore.Services
         {
             var context = new Supernova_teamContext();
 
-            var teamContext = await context.EmployeesInformations
+            var employeesInformation = await context.EmployeesInformations
                 .Include(e => e.CompanyResources)
                 .Where(r => r.Id == id)
                 .FirstOrDefaultAsync();
 
-            teamContext.FirstName = supernovaModel.FirstName;
-            teamContext.SecondName = supernovaModel.SecondName;
-            teamContext.LastName = supernovaModel.LastName;
-            teamContext.Position = supernovaModel.Position;
-            teamContext.Email = supernovaModel.Email;
-            teamContext.Birthday = supernovaModel.Birthday;
-            teamContext.Address = supernovaModel.Address;
-            teamContext.MobileNumber = supernovaModel.MobileNumber;
+            employeesInformation.FirstName = supernovaModel.FirstName;
+            employeesInformation.SecondName = supernovaModel.SecondName;
+            employeesInformation.LastName = supernovaModel.LastName;
+            employeesInformation.Position = supernovaModel.Position;
+            employeesInformation.Email = supernovaModel.Email;
+            employeesInformation.Birthday = supernovaModel.Birthday;
+            employeesInformation.Address = supernovaModel.Address;
+            employeesInformation.MobileNumber = supernovaModel.MobileNumber;
+            employeesInformation.CompanyResources.FirstOrDefault().EmployeeId = supernovaModel.EmployeeId;
+            employeesInformation.CompanyResources.FirstOrDefault().CompanyMobileNumber = supernovaModel.CompanyMobileNumber;
+            employeesInformation.CompanyResources.FirstOrDefault().Headphones = supernovaModel.Headphones;
+            employeesInformation.CompanyResources.FirstOrDefault().LaptopModel = supernovaModel.LaptopModel;
+            employeesInformation.CompanyResources.FirstOrDefault().LaptopSn = supernovaModel.LaptopSN;
+            employeesInformation.CompanyResources.FirstOrDefault().MobilePhone = supernovaModel.MobilePhone;
+            employeesInformation.CompanyResources.FirstOrDefault().MonitorModel = supernovaModel.MonitorModel;
+            employeesInformation.CompanyResources.FirstOrDefault().MonitorSn = supernovaModel.MonitorSN;
+            employeesInformation.CompanyResources.FirstOrDefault().OtherInfo = supernovaModel.OtherInfo;
 
-            teamContext.CompanyResources.CompanyMobileNumber = supernovaModel.CompanyMobileNumber;
-            teamContext.CompanyResources.Headphones = supernovaModel.Headphones;
-            teamContext.CompanyResources.LaptopModel = supernovaModel.LaptopModel;
-            teamContext.CompanyResources.LaptopSn = supernovaModel.LaptopSN;
-            teamContext.CompanyResources.MobilePhone = supernovaModel.MobilePhone;
-            teamContext.CompanyResources.MonitorModel = supernovaModel.MonitorModel;
-            teamContext.CompanyResources.MonitorSn = supernovaModel.MonitorSN;
-            teamContext.CompanyResources.OtherInfo = supernovaModel.OtherInfo;
-
-            context.Update(teamContext);
+            context.Update(employeesInformation);
             await context.SaveChangesAsync();
 
             return supernovaModel;

@@ -7,6 +7,11 @@ namespace SupernovaCore.Models
 {
     public partial class EmployeesInformation
     {
+        public EmployeesInformation()
+        {
+            CompanyResources = new HashSet<CompanyResource>();
+        }
+
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
@@ -16,8 +21,7 @@ namespace SupernovaCore.Models
         public int? MobileNumber { get; set; }
         public string Email { get; set; }
         public DateTime? Birthday { get; set; }
-        public int ResourceId { get; set; }
 
-        public virtual CompanyResource CompanyResources { get; set; }
+        public virtual ICollection<CompanyResource> CompanyResources { get; set; }
     }
 }
