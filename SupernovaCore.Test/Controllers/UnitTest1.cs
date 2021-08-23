@@ -7,5 +7,9 @@ using SupernovaCore.Controllers;
 
 namespace SupernovaCore.Test
 {
+    // Arrange
 
+    // Act
+
+    // Assert
 }

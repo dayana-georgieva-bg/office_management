@@ -10,11 +10,14 @@ namespace SupernovaCore.Services
 {
     public class EmployeesService : IEmployeesService
     {
-        public async Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel)
-        {
-            var context = new Supernova_teamContext();
-            
+        private readonly Supernova_teamContext context;
 
+        public EmployeesService(Supernova_teamContext contect)
+        {
+            this.context = contect;
+        }
+        public async Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel)
+        {         
             EmployeesInformation employeesInformation = new EmployeesInformation()
             {
                 Id = 0,
@@ -29,7 +32,7 @@ namespace SupernovaCore.Services
                 
             };
             
-                context.Add(employeesInformation);
+                this.context.Add(employeesInformation);
                 await context.SaveChangesAsync();
 
             CompanyResource companyResource = new CompanyResource()
@@ -55,9 +58,7 @@ namespace SupernovaCore.Services
 
         public async Task<SupernovaModel> EmployeeDetails(int? id)
         {
-            var context = new Supernova_teamContext();
-
-            var employeesInformation = await context.EmployeesInformations
+            var employeesInformation = await this.context.EmployeesInformations
                .Include(e => e.CompanyResources)
                .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -93,8 +94,7 @@ namespace SupernovaCore.Services
 
         public async Task<SupernovaModel> EmployeeEditGet(int? id)
         {
-            var context = new Supernova_teamContext();
-            var employeesInformation = await context.EmployeesInformations
+            var employeesInformation = await this.context.EmployeesInformations
                 .Include(e => e.CompanyResources)
                 .Where(r => r.Id == id)
                 .FirstOrDefaultAsync();
@@ -127,9 +127,7 @@ namespace SupernovaCore.Services
 
         public async Task<SupernovaModel> EmployeeEditPost(SupernovaModel supernovaModel, int? id)
         {
-            var context = new Supernova_teamContext();
-
-            var employeesInformation = await context.EmployeesInformations
+            var employeesInformation = await this.context.EmployeesInformations
                 .Include(e => e.CompanyResources)
                 .Where(r => r.Id == id)
                 .FirstOrDefaultAsync();
@@ -160,9 +158,7 @@ namespace SupernovaCore.Services
 
         public async Task<List<EmployeesInformation>> GetEmployeesWithResources()
         {
-            var context = new Supernova_teamContext();
-
-            return await context.EmployeesInformations.Include(e => e.CompanyResources).ToListAsync();
+            return await this.context.EmployeesInformations.Include(e => e.CompanyResources).ToListAsync();
         }
     }
 }

@@ -28,8 +28,9 @@ namespace SupernovaCore
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddRazorPages();
+            services.AddDbContext<Supernova_teamContext>(
+            options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            services.AddDbContext<Supernova_teamContext>();
             services.AddMvc();
 
             services.AddTransient<IEmployeesService, EmployeesService>();
@@ -37,11 +38,9 @@ namespace SupernovaCore
             //{
             //    cfg.AddProfile(new UserProfile(provider.GetService<Supernova_teamContext>()));
             //}));
-
-
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
