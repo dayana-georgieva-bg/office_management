@@ -30,24 +30,47 @@ namespace SupernovaCore.Test.EployeesTests
             await service.EmployeeCreate(employee);
 
             var storedEmployeesCount = await service.GetEmployeesWithResources();
-            var storedEmployee = await service.EmployeeDetails(1);
+            //var initiallyStoredEmployee = (await service.GetEmployeesWithResources())
+            //    .FirstOrDefault();
 
-            var newEmployee = new SupernovaModel { FirstName = "Toni2", SecondName = "Ilchov2", LaptopModel = "Acer" };
-            await service.EmployeeEditPost(newEmployee, 1);
+            var initiallyStoredEmployee = await service.EmployeeDetails(1);
 
             // Assert
-
             Assert.Single(storedEmployeesCount);
-            //Assert.Equal("Toni", storedEmployee.FirstName);
-            //Assert.Equal("Dimitrov", storedEmployee.LastName);
-            //Assert.Equal(0888777666, storedEmployee.CompanyMobileNumber);
+            Assert.Equal("Toni", initiallyStoredEmployee.FirstName);
+            Assert.Equal("Il.", initiallyStoredEmployee.SecondName);
+            Assert.Equal("Dimitrov", initiallyStoredEmployee.LastName);
+            Assert.Equal(new DateTime(1990, 08, 08), initiallyStoredEmployee.Birthday);
+            Assert.Equal(0888777666, initiallyStoredEmployee.CompanyMobileNumber);
 
-            Assert.NotEqual(employee, newEmployee);
-            Assert.Equal("Toni2", newEmployee.FirstName);
-            Assert.NotEqual(storedEmployee.FirstName, newEmployee.FirstName);
+            // Arrange
+            var newInfoEmployee = new SupernovaModel
+            {
+                FirstName = "Toni2",
+                SecondName = "Ilchov2",
+                LastName = "Dimitrov2",
+                Address = "Sofia, Flat mountain street",
+                Birthday = new DateTime(1970, 01, 01),
+                LaptopModel = "Acer",
+                CompanyMobileNumber = 0888111111
+            };
 
+            // Act
+            await service.EmployeeEditPost(newInfoEmployee, 1);
 
+            // I check if I edited but not create second employee, just in case
+            storedEmployeesCount = await service.GetEmployeesWithResources();
 
+            // Get edited employee from DB
+            var editedEmployee = (await service.GetEmployeesWithResources())
+                .FirstOrDefault();
+
+            // Assert
+            Assert.Single(storedEmployeesCount);
+            Assert.Equal("Toni2", editedEmployee.FirstName);
+            Assert.Equal("Ilchov2", editedEmployee.SecondName);
+            Assert.Equal("Dimitrov2", editedEmployee.LastName);
+            Assert.Equal(new DateTime(1970, 01, 01), editedEmployee.Birthday);
         }
     }
 }
