@@ -499,3 +499,4 @@ C:\Users\Admin\source\repos\SupernovaCore\SupernovaCore.Test\obj\Debug\net5.0\Su
 C:\Users\Admin\source\repos\SupernovaCore\SupernovaCore.Test\obj\Debug\net5.0\ref\SupernovaCore.Test.dll
 C:\Users\Admin\source\repos\SupernovaCore\SupernovaCore.Test\obj\Debug\net5.0\SupernovaCore.Test.pdb
 C:\Users\Admin\source\repos\SupernovaCore\SupernovaCore.Test\obj\Debug\net5.0\SupernovaCore.Test.genruntimeconfig.cache
+C:\Users\Admin\source\repos\SupernovaCore\SupernovaCore.Test\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.InMemory.dll
