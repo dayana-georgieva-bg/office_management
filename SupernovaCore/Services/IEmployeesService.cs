@@ -14,5 +14,7 @@ namespace SupernovaCore.Services
         Task<SupernovaModel> EmployeeEditGet(int? id);
         Task<SupernovaModel> EmployeeEditPost(SupernovaModel supernovaModel, int? id);
         Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel);
+        Task<EmployeesInformation> EmployeeDeleteGet(int? id);
+        Task<EmployeesInformation> EmployeeDeleteConfirmed(int? id);
     }
 }

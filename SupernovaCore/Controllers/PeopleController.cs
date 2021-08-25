@@ -148,9 +148,8 @@ namespace SupernovaCore.Controllers
                 return NotFound();
             }
 
-            var employeesInformation = await _context.EmployeesInformations
-                .Include(e => e.CompanyResources)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var employeesInformation = await this.employeesService.EmployeeDeleteGet(id);
+
             if (employeesInformation == null)
             {
                 return NotFound();
@@ -165,13 +164,7 @@ namespace SupernovaCore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            var employeesInformation = await _context.EmployeesInformations
-                .Include(r => r.CompanyResources)
-                .Where(e => e.Id == id)
-                .FirstOrDefaultAsync();
-
-            _context.EmployeesInformations.Remove(employeesInformation);
-             await _context.SaveChangesAsync();
+            var delete = await this.employeesService.EmployeeDeleteConfirmed(id);
 
             return RedirectToAction(nameof(Index));
         }

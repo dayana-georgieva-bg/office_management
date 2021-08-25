@@ -12,9 +12,9 @@ namespace SupernovaCore.Services
     {
         private readonly Supernova_teamContext context;
 
-        public EmployeesService(Supernova_teamContext contect)
+        public EmployeesService(Supernova_teamContext context)
         {
-            this.context = contect;
+            this.context = context;
         }
         public async Task<SupernovaModel> EmployeeCreate(SupernovaModel supernovaModel)
         {         
@@ -54,6 +54,28 @@ namespace SupernovaCore.Services
             await context.SaveChangesAsync();
 
             return supernovaModel;
+        }
+
+        public async Task<EmployeesInformation> EmployeeDeleteConfirmed(int? id)
+        {
+            var employeesInformation = await context.EmployeesInformations
+                .Include(r => r.CompanyResources)
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync();
+
+            context.EmployeesInformations.Remove(employeesInformation);
+            await context.SaveChangesAsync();
+
+            return employeesInformation;
+        }
+
+        public async Task<EmployeesInformation> EmployeeDeleteGet(int? id)
+        {
+            var employeesInformation = await context.EmployeesInformations
+                .Include(e => e.CompanyResources)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            return employeesInformation;
         }
 
         public async Task<SupernovaModel> EmployeeDetails(int? id)
@@ -160,5 +182,6 @@ namespace SupernovaCore.Services
         {
             return await this.context.EmployeesInformations.Include(e => e.CompanyResources).ToListAsync();
         }
+
     }
 }

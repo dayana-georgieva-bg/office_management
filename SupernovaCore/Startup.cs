@@ -27,7 +27,7 @@ namespace SupernovaCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddRazorPages();
+            
             services.AddDbContext<Supernova_teamContext>(
             options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
