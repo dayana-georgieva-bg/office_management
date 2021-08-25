@@ -34,20 +34,18 @@ namespace SupernovaCore.Test.EployeesTests
             var storedEmployee = await service.EmployeeDetails(1);
 
             // Assert
-            Assert.Single(storedEmployeesCount);
+            Assert.Single(storedEmployeesCount); 
             Assert.Equal("Toni", storedEmployee.FirstName);
             Assert.Equal("Dimitrov", storedEmployee.LastName);
             Assert.Equal(0888777666, storedEmployee.CompanyMobileNumber);
 
             //Act
-            //var deleted = new PeopleController(dbContext, service);
-            //await deleted.DeleteConfirmed(1);
 
-            storedEmployeesCount = await service.EmployeeDeleteConfirmed();
+            await service.EmployeeDeleteConfirmed(storedEmployee.Id);
+            var anyEmployees = await service.GetEmployeesWithResources();
+
             //Assert
-            Assert.Empty(storedEmployeesCount);
-
-
+            Assert.Empty(anyEmployees);
         }
     }
 }
